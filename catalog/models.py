@@ -25,6 +25,13 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse('book-detail', args=[str(self.id)])
 
+    def display_genre(self):
+        #Disply only three genres out of all genres using [:3]
+        return ', ' .join(genre.name for genre in self.genre.all()[:3])
+
+    #Change the default description from display_genre to Genre
+    display_genre.short_description = 'Genre'
+
     
 class BookInstance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this particular book across whole library')
@@ -35,15 +42,15 @@ class BookInstance(models.Model):
     LOAN_STATUS = (
         ('m', 'Maintenance'),
         ('o', 'On loan'),
-        ('a', 'available'),
-        ('r', 'reserved'),
+        ('a', 'Available'),
+        ('r', 'Reserved'),
     )
 
     status = models.CharField(
         max_length=1, 
         choices=LOAN_STATUS, 
         blank=True, 
-        default='m', 
+        default='a', 
         help_text='Book availability')
 
     class Meta:
